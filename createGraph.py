@@ -52,7 +52,7 @@ def add_relationships(graph_db):
 	
 	# Retrieve all rows in symptom table
 	cur = primary.cursor()
-	cur.execute("SELECT * FROM symptoms LIMIT 3")
+	cur.execute("SELECT * FROM symptoms")
 	
 	# Loop through each of the rows, extracting relational data
 	numrows = int(cur.rowcount)
@@ -65,15 +65,16 @@ def add_relationships(graph_db):
 		for symptom in related:
 			curs = secondary.cursor()
 			curs.execute("SELECT * FROM related_symptoms WHERE `Related Symptom` = %s", (symptom)) # Check if any relations are already stored
-			result = curs.fetchone()
+			result = curs.fetchall()
 			if result:
-				# Add the relation back to the different parent node, according to id
-				print result[1] + ': Match found (' + str(result[2]) + ')'
-				to_node = symptoms.get("symptom_id", str(result[2]))[0] # Find the related node, taking first element from array
-				from_node.create_relationship_to(to_node, "related to")
+				for symptom_row in result:
+					# Add the relation back to the different parent node, according to id
+					#print symptom_row[0] + ': Match found (' + str(symptom_row[1]) + ')'
+					to_node = symptoms.get("symptom_id", str(symptom_row[1]))[0] # Find the related node, taking first element from array
+					from_node.create_relationship_to(to_node, "related to")
 			else:
 				# Make a new node for the symptom, and add a relation back to the parent
-				print symptom + ': No match found, creating new node'
+				#print symptom + ': No match found, creating new node'
 				to_node, = graph_db.create({"name": symptom, "type": "related_symptom"}) # Make a node for each related symptom
 				from_node.create_relationship_to(to_node, "related to") # Add a relation back to the parent node
 		

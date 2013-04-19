@@ -11,8 +11,8 @@ from urlparse import urlparse
 def clear_related_table():
 	curp = primary.cursor()
 	curp.execute("DROP TABLE IF EXISTS related_symptoms")
-	curp.execute("CREATE TABLE IF NOT EXISTS related_symptoms(id INT PRIMARY KEY AUTO_INCREMENT, `Related Symptom` VARCHAR(200), `Primary Symptom Id` INT)")
-	#curp.execute("ALTER TABLE related_symptoms ADD CONSTRAINT tb_un UNIQUE (`Related Symptom`)")
+	curp.execute("CREATE TABLE IF NOT EXISTS related_symptoms(`Related Symptom` VARCHAR(200), `Primary Symptom Id` INT)")
+	curp.execute("ALTER TABLE related_symptoms ADD PRIMARY KEY (`Related Symptom`, `Primary Symptom Id`)")
 	primary.commit()
 	curp.close()
 
@@ -30,7 +30,7 @@ def analyse_symptoms(rows, secondary, tertiary):
 			for primary_symptom in curs.fetchall():
 				# Check if the primary symptom and the related symptom refer to the same symptom
 				if similar(related_symptom, primary_symptom[1]):
-					print 'Match found: ' + related_symptom + '-> (' + str(primary_symptom[0]) + ') ' + primary_symptom[1]
+					#print 'Match found: ' + related_symptom + '-> (' + str(primary_symptom[0]) + ') ' + primary_symptom[1]
 					counter = counter + 1
 					curt = tertiary.cursor()
 					# Insert an entry into the related symptoms table for each identified relation
@@ -112,7 +112,7 @@ if __name__ == '__main__':
 	
 	# Retrieve the first 10 rows in the symptom table
 	curp = primary.cursor()
-	curp.execute("SELECT * FROM symptoms LIMIT 2")
+	curp.execute("SELECT * FROM symptoms")
 	
 	# Get all rows of the result set
 	rows = curp.fetchall()

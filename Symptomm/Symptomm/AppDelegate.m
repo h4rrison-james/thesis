@@ -7,12 +7,22 @@
 //
 
 #import "AppDelegate.h"
+#import "DataController.h"
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    // Override point for customization after application launch.
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    // Restore the symptom array, or create it if it doesn't yet exist
+    if ([defaults objectForKey:@"symptomArray"]) {
+        [DataController sharedClient].symptomArray = [[defaults objectForKey:@"symptomArray"] mutableCopy];
+    }
+    else {
+        [DataController sharedClient].symptomArray = [[NSMutableArray alloc] init];
+    }
+    
     return YES;
 }
 							
@@ -24,13 +34,21 @@
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
-    // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:[DataController sharedClient].symptomArray forKey:@"symptomArray"];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
-    // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    // Restore the symptom array, or create it if it doesn't yet exist
+    if ([defaults objectForKey:@"symptomArray"]) {
+        [DataController sharedClient].symptomArray = [[defaults objectForKey:@"symptomArray"] mutableCopy];
+    }
+    else {
+        [DataController sharedClient].symptomArray = [[NSMutableArray alloc] init];
+    }
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application

@@ -1,0 +1,18 @@
+// Order symptoms by incoming nodes (descending)
+
+START n=node(*)
+MATCH n<-[r]-m
+WHERE type(r) = 'related to' AND n.type = 'symptom'
+WITH n, collect(distinct m) as groups
+RETURN n, n.name, length(groups)
+ORDER BY length(groups) DESC
+
+// Match an array of symptoms and most related symptoms
+
+START n=node(*) 
+MATCH n-[r]-m
+WHERE type(r) = 'related to' and n.type = 'symptom'
+WITH n, collect(distinct m.name) as groups
+WHERE ANY(x in groups where x in ["Headache", "Pain", "Runny Nose"])
+RETURN n, n.name, filter(j in groups : j in ["Headache", "Pain", "Runny Nose"])
+ORDER BY length(filter(j in groups : j in ["Headache", "Pain", "Runny Nose"])) DESC

@@ -113,8 +113,8 @@
 			children = (
 				849738871730C261001C5A1A /* AppDelegate.h */,
 				849738881730C261001C5A1A /* AppDelegate.m */,
-				846423D4173231A800A52E51 /* DataController.m */,
 				846423D5173231A800A52E51 /* DataController.h */,
+				846423D4173231A800A52E51 /* DataController.m */,
 				849738AD1730C66E001C5A1A /* View Controllers */,
 				849738901730C262001C5A1A /* MainStoryboard_iPhone.storyboard */,
 				849738931730C262001C5A1A /* MainStoryboard_iPad.storyboard */,

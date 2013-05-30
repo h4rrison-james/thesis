@@ -11,7 +11,7 @@
 
 @implementation DataController
 
-@synthesize symptomArray;
+@synthesize symptomArray, resultsArray;
 
 static DataController *sharedClient;
 

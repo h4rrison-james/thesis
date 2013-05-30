@@ -22,7 +22,7 @@
     else {
         [DataController sharedClient].symptomArray = [[NSMutableArray alloc] init];
     }
-    
+        
     return YES;
 }
 							

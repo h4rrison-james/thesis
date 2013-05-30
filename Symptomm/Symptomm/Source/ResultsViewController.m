@@ -24,7 +24,33 @@
     [super viewDidLoad];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    NSLog(@"Sending Cypher query");
+    
+    //Build the parameters dictionary
+    NSArray *symptoms = [DataController sharedClient].symptomArray;
+    
+    NSDictionary* params = [[NSDictionary alloc] initWithObjectsAndKeys:symptoms, @"array", nil];
+    NSString *query = @"START n=node(*) MATCH n-[r]-m WHERE type(r) = 'related to' and n.type = 'symptom' WITH n, collect(distinct m.name) as groups WHERE ANY(x in groups where x in {array}) RETURN n.name, length(filter(j in groups : j in {array})) ORDER BY length(filter(j in groups : j in {array})) DESC";
+    NSDictionary *requestPayload = [[NSDictionary alloc] initWithObjectsAndKeys:query, @"query", params, @"params", nil];
+        
+    AFHTTPClient *client = [[AFHTTPClient alloc] initWithBaseURL:[NSURL URLWithString:@"http://localhost:7474"]];
+    client.parameterEncoding = AFJSONParameterEncoding;
+    [client registerHTTPOperationClass:[AFJSONRequestOperation class]];
+    [client postPath:@"/db/data/cypher/" parameters:requestPayload success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSDictionary* jsonFromData = (NSDictionary*)[NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
+        NSArray *resultArray = [jsonFromData objectForKey:@"data"];
+        [DataController sharedClient].resultsArray = [resultArray mutableCopy];
+        [self.tableView reloadData];
+        
+        NSLog(@"Success: %d results", [resultArray count]);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"Failure: %@", error);
+    }];
+}
+
 - (void)didReceiveMemoryWarning
+
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -41,15 +67,17 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    return 0;
+    return [[DataController sharedClient].resultsArray count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"Cell";
+    static NSString *CellIdentifier = @"ResultCell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
-    // Configure the cell...
+    NSArray *symptom = [[DataController sharedClient].resultsArray objectAtIndex:[indexPath row]];
+    cell.textLabel.text = [symptom objectAtIndex:0];
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ symptoms matched", [symptom objectAtIndex:1]];
     
     return cell;
 }

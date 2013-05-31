@@ -126,11 +126,11 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="detailDisclosureButton" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ResultCell" textLabel="gS4-Vo-wA9" detailTextLabel="OIb-Qf-O00" style="IBUITableViewCellStyleSubtitle" id="esQ-nZ-Giq">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ResultCell" textLabel="gS4-Vo-wA9" detailTextLabel="OIb-Qf-O00" style="IBUITableViewCellStyleSubtitle" id="esQ-nZ-Giq">
                                 <rect key="frame" x="0.0" y="22" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                    <rect key="frame" x="0.0" y="0.0" width="287" height="43"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="300" height="43"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gS4-Vo-wA9">
@@ -147,7 +147,7 @@
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
                                 <connections>
-                                    <segue destination="QaI-jU-3fg" kind="push" trigger="accessoryAction" id="5gU-I2-sZE"/>
+                                    <segue destination="QaI-jU-3fg" kind="push" id="dEh-OA-odT"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -165,19 +165,36 @@
                     <view key="view" contentMode="scaleToFill" id="HF9-h1-FB9">
                         <rect key="frame" x="0.0" y="64" width="320" height="455"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gxd-id-Z6M">
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                <dataDetectorType key="dataDetectorTypes" phoneNumber="YES" link="YES"/>
+                            </textView>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="gxd-id-Z6M" firstAttribute="trailing" secondItem="HF9-h1-FB9" secondAttribute="trailing" type="default" id="4wm-yf-pve"/>
+                            <constraint firstItem="gxd-id-Z6M" firstAttribute="leading" secondItem="HF9-h1-FB9" secondAttribute="leading" type="default" id="KVP-SW-uIC"/>
+                            <constraint firstItem="gxd-id-Z6M" firstAttribute="bottom" secondItem="HF9-h1-FB9" secondAttribute="bottom" type="default" id="Sls-EJ-flM"/>
+                            <constraint firstItem="gxd-id-Z6M" firstAttribute="top" secondItem="HF9-h1-FB9" secondAttribute="top" type="default" id="bUc-BZ-ndn"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="7h8-OZ-3Eb"/>
+                    <connections>
+                        <outlet property="descriptionView" destination="gxd-id-Z6M" id="e2w-CK-9Qb"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kkm-5x-kb9" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1687" y="486"/>
         </scene>
-        <!--Navigation Controller - Results-->
+        <!--Navigation Controller-->
         <scene sceneID="aER-9B-GmH">
             <objects>
                 <navigationController definesPresentationContext="YES" id="y1U-tV-hae" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Results" id="LsC-Y7-XoD"/>
+                    <tabBarItem key="tabBarItem" systemItem="more" id="LsC-Y7-XoD"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="VT0-Y8-qyj">
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -228,6 +245,12 @@
     <classes>
         <class className="DetailViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/DetailViewController.h"/>
+            <relationships>
+                <relationship kind="outlet" name="descriptionView" candidateClass="UITextView"/>
+            </relationships>
+        </class>
+        <class className="NSLayoutConstraint" superclassName="NSObject">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/NSLayoutConstraint.h"/>
         </class>
         <class className="ResultsViewController" superclassName="UITableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/ResultsViewController.h"/>

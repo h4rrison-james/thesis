@@ -7,7 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AFNetworking.h"
 
-@interface DetailViewController : UIViewController
+@interface DetailViewController : UIViewController {
+
+}
+@property (weak, nonatomic) IBOutlet UITextView *descriptionView;
 
 @end

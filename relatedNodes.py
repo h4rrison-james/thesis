@@ -10,14 +10,19 @@ from urlparse import urlparse
 #### Clears the database table ####
 def clear_related_table():
 	curp = primary.cursor()
+	# Temporary table used for storing relations between related symptoms and primary symptoms
 	curp.execute("DROP TABLE IF EXISTS related_symptoms")
 	curp.execute("CREATE TABLE IF NOT EXISTS related_symptoms(`Related Symptom` VARCHAR(200), `Primary Symptom Id` INT)")
 	curp.execute("ALTER TABLE related_symptoms ADD PRIMARY KEY (`Related Symptom`, `Primary Symptom Id`)")
+	# Temporary table used for storing relations between two primary symptoms
+	curp.execute("DROP TABLE IF EXISTS primary_symptoms")
+	curp.execute("CREATE TABLE IF NOT EXISTS primary_symptoms(`Main Symptom Id` INT, `Sub-Symptom Id` INT)")
+	curp.execute("ALTER TABLE primary_symptoms ADD PRIMARY KEY (`Main Symptom Id`)")
 	primary.commit()
 	curp.close()
 
 #### Makes connections to related symptoms for each row in rows ####
-def analyse_symptoms(rows, secondary, tertiary):
+def analyse_related_symptoms(rows, secondary, tertiary):
 	
 	counter = 0
 	
@@ -45,6 +50,38 @@ def analyse_symptoms(rows, secondary, tertiary):
 	secondary.close(); tertiary.close()
 	
 	return counter
+
+#### Makes connections between primary symptoms for each row ####
+def analyse_primary_symptoms(rows, secondary, tertiary):
+	counter = 0
+	
+	for result in rows:
+		#For each symptom in the table, look for matches to other symptoms
+		curs = secondary.cursor()
+		curs.execute("SELECT * FROM symptoms ORDER BY LENGTH(Symptom)") #Ordered by length here so that longer symptoms are processed later
+		for primary_symptom in curs.fetchall():
+			if primary_similar(primary_symptom[1], result[1]):
+				print 'Primary match found: {0} ({1}) -> {2} ({3})'.format(result[1], str(result[0]), primary_symptom[1], str(primary_symptom[0]))
+				counter = counter + 1
+				curt = tertiary.cursor()
+				#Insert an entry into the related symptoms table for each identified relation
+				curt.execute("REPLACE INTO primary_symptoms(`Main Symptom Id`, `Sub-Symptom Id`) VALUES(%s, %s)", (str(result[0]), str(primary_symptom[0])))
+				tertiary.commit() # Commit the results to the database
+				curt.close() # Close the cursor
+		curs.close() # Close the cursor
+
+#### Returns true if primary and related strings are fuzzily matched ####
+def primary_similar(primary, related):
+	# Convert both strings to lower case
+	primary = primary.lower()
+	related = related.lower()
+
+	# Returns true only if primary is a substring of related
+	if (fuzz.token_set_ratio(primary, related) == 100):
+		if (primary != related):
+			if (len(related) > len(primary)):
+				return True
+	return False
 					
 #### Returns true if primary and related strings are fuzzily matched ####
 def similar(primary, related):
@@ -61,7 +98,7 @@ def similar(primary, related):
 #### Runs through the list of symptoms using multiprocessing ####
 def multiprocess(nums, nprocs):
 	def worker(nums, s_conn, t_conn, q):
-		count = analyse_symptoms(nums, s_conn, t_conn)
+		count = analyse_related_symptoms(nums, s_conn, t_conn)
 		q.put(count)
 
 	# Each process will get 'chunksize' nums
@@ -116,8 +153,14 @@ if __name__ == '__main__':
 	
 	# Get all rows of the result set
 	rows = curp.fetchall()
+	
+	#Look through all related symptoms using multiprocessing to speed things up
 	total = multiprocess(rows, 8)
 	print 'Total conections: ' + str(total)
+	
+	s_conn = mdb.connect(host='127.0.0.1', port=8889, user='root', passwd='root', db='bowie_db');
+	t_conn = mdb.connect(host='127.0.0.1', port=8889, user='root', passwd='root', db='bowie_db');
+	analyse_primary_symptoms(rows, s_conn, t_conn)
 
 	# Tidy up database connections
 	curp.close();

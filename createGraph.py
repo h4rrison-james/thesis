@@ -45,7 +45,21 @@ def create_graph(graph_db):
 	primary.commit()
 	cur.close()
 
-def add_relationships(graph_db):
+def add_primary_relationships(graph_db):
+	
+	# Obtain a reference to the Symptom index
+	symptoms = graph_db.get_or_create_index(neo4j.Node, "Symptoms")
+	
+	cur = primary.cursor()
+	cur.execute("SELECT * FROM primary_symptoms")
+	
+	for row in cur.fetchall():
+		from_node = symptoms.get("symptom_id", str(row[0]))[0] # Find the beginning node, taking first element from array
+		to_node = symptoms.get("symptom_id", str(row[1]))[0] # Find the end node
+		from_node.create_relationship_to(to_node, "type of") # Add 'type of' relation between the two nodes
+		print "{0} -> {1}".format(from_node["name"], to_node["name"])
+		
+def add_secondary_relationships(graph_db):
 	
 	# Obtain a reference to the Symptom index
 	symptoms = graph_db.get_or_create_index(neo4j.Node, "Symptoms")
@@ -59,7 +73,7 @@ def add_relationships(graph_db):
 	for i in range(numrows):
 		row = cur.fetchone()
 		from_node = symptoms.get("symptom_id", str(row[0]))[0] # Find the parent node, taking first element from array
-		print '\nParent Node: ' + from_node["name"]
+		print 'Analysing Parent Node: ' + from_node["name"]
 	
 		related = row[4].split(' , ') # Separate the related symptoms out into a tuple
 		for symptom in related:
@@ -72,19 +86,20 @@ def add_relationships(graph_db):
 					#print symptom_row[0] + ': Match found (' + str(symptom_row[1]) + ')'
 					to_node = symptoms.get("symptom_id", str(symptom_row[1]))[0] # Find the related node, taking first element from array
 					from_node.create_relationship_to(to_node, "related to")
-			else:
-				# Make a new node for the symptom, and add a relation back to the parent
-				#print symptom + ': No match found, creating new node'
-				to_node, = graph_db.create({"name": symptom, "type": "related_symptom"}) # Make a node for each related symptom
-				from_node.create_relationship_to(to_node, "related to") # Add a relation back to the parent node
+#			else:
+#				# Make a new node for the symptom, and add a relation back to the parent
+#				#print symptom + ': No match found, creating new node'
+#				to_node, = graph_db.create({"name": symptom, "type": "related_symptom"}) # Make a node for each related symptom
+#				from_node.create_relationship_to(to_node, "related to") # Add a relation back to the parent node
 		
-		causes = row[3].split(' , ') # Separate the causes out into a tuple
-		for cause in causes:
-			to_node, = graph_db.create({"name": cause, "type": "cause"})
-			from_node.create_relationship_to(to_node, "caused by") # Add relation back to the parent node
+#		causes = row[3].split(' , ') # Separate the causes out into a tuple
+#		for cause in causes:
+#			to_node, = graph_db.create({"name": cause, "type": "cause"})
+#			from_node.create_relationship_to(to_node, "caused by") # Add relation back to the parent node
 
 if __name__ == '__main__':
     # Connect to the database
     # Run script to create the Neo4j graph data
 	create_graph(graph_db)
-	add_relationships(graph_db)
+	add_primary_relationships(graph_db)
+	add_secondary_relationships(graph_db)

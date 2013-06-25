@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "DataController.h"
+#import "AFNetworking.h"
 
 @interface SymptomViewController : UITableViewController
 

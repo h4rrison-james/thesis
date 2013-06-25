@@ -22,7 +22,15 @@
     else {
         [DataController sharedClient].symptomArray = [[NSMutableArray alloc] init];
     }
-        
+    
+    // Restore the symptom array, or create it if it doesn't yet exist
+    if ([defaults objectForKey:@"mainArray"]) {
+        [DataController sharedClient].mainArray = [[defaults objectForKey:@"mainArray"] mutableCopy];
+    }
+    else {
+        [DataController sharedClient].mainArray = [[NSMutableArray alloc] init];
+    }
+    
     return YES;
 }
 							
@@ -36,6 +44,7 @@
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:[DataController sharedClient].symptomArray forKey:@"symptomArray"];
+    [defaults setObject:[DataController sharedClient].mainArray forKey:@"mainArray"];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -48,6 +57,14 @@
     }
     else {
         [DataController sharedClient].symptomArray = [[NSMutableArray alloc] init];
+    }
+    
+    // Restore the symptom array, or create it if it doesn't yet exist
+    if ([defaults objectForKey:@"mainArray"]) {
+        [DataController sharedClient].mainArray = [[defaults objectForKey:@"mainArray"] mutableCopy];
+    }
+    else {
+        [DataController sharedClient].mainArray = [[NSMutableArray alloc] init];
     }
 }
 

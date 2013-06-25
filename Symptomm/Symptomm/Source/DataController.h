@@ -10,10 +10,12 @@
     //An array of City objects representing all pins on the map
     NSMutableArray *symptomArray;
     NSMutableArray *resultsArray;
+    NSMutableArray *mainArray;
 }
 
 @property (nonatomic, retain) NSMutableArray *symptomArray;
 @property (nonatomic, retain) NSMutableArray *resultsArray;
+@property (nonatomic, retain) NSMutableArray *mainArray;
 
 +(DataController *)sharedClient;
 

@@ -29,6 +29,30 @@
  
     // Enable editing of the current symptom list.
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    
+    NSLog(@"Cypher: Requesting Symptom List");
+    
+    NSString *query = @"START n=node(*) RETURN n.name";
+    NSDictionary *requestPayload = [[NSDictionary alloc] initWithObjectsAndKeys:query, @"query", nil];
+    
+    AFHTTPClient *client = [[AFHTTPClient alloc] initWithBaseURL:[NSURL URLWithString:@"http://localhost:7474"]];
+    client.parameterEncoding = AFJSONParameterEncoding;
+    [client registerHTTPOperationClass:[AFJSONRequestOperation class]];
+    [client postPath:@"/db/data/cypher/" parameters:requestPayload success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSDictionary* jsonFromData = (NSDictionary*)[NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
+        NSArray *resultArray = [jsonFromData objectForKey:@"data"];
+        
+        NSLog(@"Success: %d results", [resultArray count]);
+        NSMutableArray *array = [[NSMutableArray alloc] init];
+        for (NSArray *symptom in resultArray) {
+            //NSLog(@"%@", symptom[0]);
+            [array addObject:symptom[0]];
+        }
+        [DataController sharedClient].mainArray = array;
+        NSLog(@"%@", [DataController sharedClient].mainArray);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"Failure: %@", error);
+    }];
 }
 
 - (void)viewWillAppear:(BOOL)animated {

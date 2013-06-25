@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		846423D6173231A800A52E51 /* DataController.m in Sources */ = {isa = PBXBuildFile; fileRef = 846423D4173231A800A52E51 /* DataController.m */; };
+		8467BE1B1779B73E000624F8 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8467BE1A1779B73E000624F8 /* SystemConfiguration.framework */; };
+		8467BE1D1779B749000624F8 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8467BE1C1779B749000624F8 /* MobileCoreServices.framework */; };
 		849738791730C261001C5A1A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 849738781730C261001C5A1A /* UIKit.framework */; };
 		8497387B1730C261001C5A1A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8497387A1730C261001C5A1A /* Foundation.framework */; };
 		8497387D1730C261001C5A1A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8497387C1730C261001C5A1A /* CoreGraphics.framework */; };
@@ -34,6 +36,8 @@
 		171ECB88AAA44A73802E980D /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 		846423D4173231A800A52E51 /* DataController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DataController.m; path = Source/DataController.m; sourceTree = "<group>"; };
 		846423D5173231A800A52E51 /* DataController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DataController.h; path = Source/DataController.h; sourceTree = "<group>"; };
+		8467BE1A1779B73E000624F8 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		8467BE1C1779B749000624F8 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		849738751730C261001C5A1A /* Symptomm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Symptomm.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		849738781730C261001C5A1A /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		8497387A1730C261001C5A1A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -69,6 +73,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8467BE1D1779B749000624F8 /* MobileCoreServices.framework in Frameworks */,
+				8467BE1B1779B73E000624F8 /* SystemConfiguration.framework in Frameworks */,
 				849738791730C261001C5A1A /* UIKit.framework in Frameworks */,
 				8497387B1730C261001C5A1A /* Foundation.framework in Frameworks */,
 				8497387D1730C261001C5A1A /* CoreGraphics.framework in Frameworks */,
@@ -100,6 +106,8 @@
 		849738771730C261001C5A1A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8467BE1C1779B749000624F8 /* MobileCoreServices.framework */,
+				8467BE1A1779B73E000624F8 /* SystemConfiguration.framework */,
 				849738781730C261001C5A1A /* UIKit.framework */,
 				8497387A1730C261001C5A1A /* Foundation.framework */,
 				8497387C1730C261001C5A1A /* CoreGraphics.framework */,

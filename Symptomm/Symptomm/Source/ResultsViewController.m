@@ -25,7 +25,7 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-    NSLog(@"Sending Cypher query");
+    NSLog(@"Cypher: Finding results based on symptoms");
     
     //Build the parameters dictionary
     NSArray *symptoms = [DataController sharedClient].symptomArray;

@@ -35,8 +35,14 @@ def create_graph(graph_db):
 	for i in range(numrows):
 		row = cur.fetchone()
 		
-		print 'Adding Parent Node: "' + row[1] + '"'
-		from_node, = graph_db.create({"symptom_id": row[0], "name": row[1], "type": "symptom", "description": row[2]}) # Make a node for the parent symptom
+		# Create the parent node, checking if it is a symptom or condition
+		if (row[5] == 1):
+			print 'Adding Parent Symptom: "' + row[1] + '"'
+			from_node, = graph_db.create({"symptom_id": row[0], "name": row[1], "type": "symptom", "description": row[2]}) # Make a node for the parent symptom
+		else:
+			print 'Adding Parent Condition: "' + row[1] + '"'
+			from_node, = graph_db.create({"symptom_id": row[0], "name": row[1], "type": "condition", "description": row[2]}) # Make a node for the parent symptom
+			
 		symptoms.add("symptom_id", row[0], from_node) # Add the node to the symptoms index for easy querying later
 		
 	print str(numrows) + ' symptoms succesfully added.'

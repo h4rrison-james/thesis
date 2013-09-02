@@ -55,7 +55,7 @@ def load_adjacency_matrix():
 	x = np.loadtxt('am.txt')
 	return x
 
-def run_classifiers(data, target, classifier):
+def run_classifiers(data, target):
 	# Create the classifiers
 	classifiers = [
 		DecisionTreeClassifier(random_state=0), # Decision Tree
@@ -64,12 +64,12 @@ def run_classifiers(data, target, classifier):
 		KNeighborsClassifier(3), # K-Neighbours
 	]
 	
-	csf = classifiers[classifier]
-	# Train the classifier using cross-validation
-	# The 'scoring' parameter can be changed to a number of options
-	scores = cross_validation.cross_val_score(csf, data, target, cv=10, scoring='f1')
-	print "Classification scores  for %s:" % str(csf).split('(')[0]
-	print "F1: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() / 2)
+	for csf in classifiers:
+		# Train the classifier using cross-validation
+		# The 'scoring' parameter can be changed to a number of options
+		scores = cross_validation.cross_val_score(csf, data, target, cv=10, scoring='f1')
+		print "Classification scores  for %s:" % str(csf).split('(')[0]
+		print "F1: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() / 2)
 
 #### Main execution function ####
 if __name__ == '__main__':
@@ -77,7 +77,7 @@ if __name__ == '__main__':
 	result = import_data()
 	corpus = result[0]
 	target = np.array(result[1]) # Has to be of type np.array for cross-validation
-	np.savetxt('target.txt', target)
+	#np.savetxt('target.txt', target)
 	indegree = result[2]
 	outdegree = result[3]
 	
@@ -94,31 +94,31 @@ if __name__ == '__main__':
 	data = selector.fit_transform(data, target)
 	print '\n' + '='*8 + ' After Feature Selection ' + '='*8
 	print "n_samples: %d, n_features: %d" % data.shape
-	np.savetxt('description.txt', data)
-	run_classifiers(data, target, 1)
+	#np.savetxt('description.txt', data)
+	run_classifiers(data, target)
 	
 	# Load adjacency matrix
 	am = load_adjacency_matrix()
 	print '\n' + '='*8 + ' Adjacency Matrix ' + '='*8
 	print "n_samples: %d, n_features: %d" % am.shape
-	run_classifiers(am, target, 0)
+	run_classifiers(am, target)
 	
 	# Load degree information
 	degree = np.column_stack((indegree, outdegree))
-	np.savetxt('degree.txt', degree)
+	#np.savetxt('degree.txt', degree)
 	print '\n' + '='*8 + ' Degree Information ' + '='*8
 	print "n_samples: %d, n_features: %d" % degree.shape
-	run_classifiers(degree, target, 2)
+	run_classifiers(degree, target)
 	
 	# Add the adjacency matrix to the data
 	data = np.column_stack((data, am))
 	print '\n' + '='*8 + ' Including Graph Data ' + '='*8
 	print "n_samples: %d, n_features: %d" % data.shape
-	run_classifiers(data, target, 1)
+	run_classifiers(data, target)
 	
 	# Normalise the data
 	data = normalise_data(data)
 	print '\n' + '='*8 + ' After Normalizing Data ' + '='*8
 	print "n_samples: %d, n_features: %d" % data.shape
-	run_classifiers(data, target, 1)
+	run_classifiers(data, target)
 		
